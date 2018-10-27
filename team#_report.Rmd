@@ -1,0 +1,41 @@
+---
+title: "output"
+author: "Sophia Liu"
+date: "October 27, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load-libraries}
+library(tidyverse)
+library(broom)
+library(dplyr)
+```
+
+```{r load-data}
+#firstsession <- read_csv("dataset/first_session.csv")
+user_engagement <- read_csv("dataset/user_engagement.csv")
+user_profile <- read_csv("dataset/user_profile.csv")
+```
+
+```{r}
+users <- user_engagement %>%
+  full_join(user_profile)
+```
+
+```{r}
+click_apply_data <- users %>%
+  group_by(user_id) %>%
+  mutate(apply_sum = sum(click_apply_count)) %>%
+  select(user_id, apply_sum, state) %>%
+  na.omit()
+```
+
+```{r}
+state_apply <- click_apply_data %>%
+  group_by(state) %>%
+  summarise(total_apply = sum(apply_sum))
+```
